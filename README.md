@@ -104,12 +104,23 @@ Web UI
   -> SQLite process store + LangGraph SQLite checkpointer
 ```
 
-### Design notes
+### Design rationale
 
-- **LangGraph** models explicit orchestration. Help intents skip tool execution via conditional routing; session memory uses the SQLite checkpointer.
-- **MockLLM** keeps demos deterministic and CI offline-friendly.
-- **Connectors** use timeout, exponential backoff retry, and idempotency keys.
-- **Duplicate detection**: exact VAT/DUNS, ERP lookup, fuzzy scoring with thresholds (≥95 auto-match, 80–95 review, <80 new supplier).
+This prototype prioritises **correctness and observability over AI spectacle**. The LLM handles natural-language understanding; deterministic backend code owns business facts.
+
+| Decision | Rationale |
+|----------|-----------|
+| **LangGraph orchestration** (`router → act → respond`) | Multi-step onboarding needs explicit, testable flow control. Help intents skip tools via conditional routing. |
+| **LLM as planner, tools as source of truth** | Onboarding IDs, match scores, and statuses come from tool output — not free-form generation — to reduce hallucination risk. |
+| **MockLLM as default** | Deterministic, offline-friendly demos and CI without API keys. OpenAI / Anthropic available via function calling with graceful fallback. |
+| **Duplicate detection pipeline** | Exact VAT/DUNS match, ERP lookup, and RapidFuzz fuzzy scoring with thresholds (≥95 auto, 80–95 review, below 80 new supplier). |
+| **Cross-system status aggregation** | Canonical phases plus `healthy` / `degraded` / `stale` health give one answer across ERP, procurement, and cloud. |
+| **Connector resilience** | Timeout, exponential backoff, and idempotency keys — ready to swap mocks for MCP-backed integrations in production. |
+| **Two-tier memory** | LangGraph checkpointer for conversation context; SQLite process store for long-running onboarding state. |
+
+**Rejected alternatives:** single prompt chains (weak tool control), direct UI over APIs (no conversational guidance), real integrations in the prototype (outside challenge scope).
+
+**Prototype boundaries:** template-formatted responses (not LLM-generated prose), auth/RBAC out of scope, `active` phase defined but not reached automatically. Full trade-off discussion: [`slides/index.html`](slides/index.html).
 
 ### Canonical phases
 
