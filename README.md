@@ -147,7 +147,3 @@ data/            local SQLite files (gitignored)
 
 - Procurement, ERP, and cloud systems are mocked in-memory / SQLite.
 - Authentication and RBAC are out of scope for the prototype.
-
-## Contact
-
-ALDI challenge: Orsolya Ivék — orsolya.ivek@aldi-sued.com
