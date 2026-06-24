@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Supplier Onboarding Agent Architecture</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/white.css" />
+  <style>
+    .reveal h1, .reveal h2, .reveal h3 { color: #0050a4; }
+    .reveal pre { font-size: 0.55em; }
+    .small { font-size: 0.75em; color: #475467; }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h1>Supplier Onboarding Agent</h1>
+        <p>ALDI Developer Challenge prototype</p>
+        <p class="small">Conversational onboarding across procurement, ERP, and cloud apps</p>
+      </section>
+
+      <section>
+        <h2>Problem</h2>
+        <ul>
+          <li>Onboarding takes 6.5–10 weeks</li>
+          <li>Status is fragmented across ERP, procurement, and cloud tools</li>
+          <li>Manual coordination slows time-to-market</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Vision</h2>
+        <ul>
+          <li>Guide users end-to-end in one conversational flow</li>
+          <li>Detect duplicate suppliers before creating records</li>
+          <li>Provide aggregated status on demand</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>High-level architecture</h2>
+        <pre><code>Conversational UI
+    -> FastAPI POST /chat (SSE progress + message events)
+    -> LangGraph orchestrator
+         router -> act? -> respond
+    -> Tools (duplicate, onboarding, status)
+    -> Resilient connectors
+    -> Mock ERP / Procurement / Cloud
+Memory: SQLite process store + LangGraph checkpointer</code></pre>
+      </section>
+
+      <section>
+        <h2>Why LangGraph?</h2>
+        <ul>
+          <li>Explicit router / act / respond flow with conditional routing</li>
+          <li>Help intents skip tool execution without extra branching in the UI</li>
+          <li>Session memory via checkpointer; stream mode for live progress events</li>
+        </ul>
+        <p class="small">Rejected: ad-hoc prompt loops (hard to observe), heavy multi-agent frameworks (too much ceremony for a prototype)</p>
+      </section>
+
+      <section>
+        <h2>LLM choice</h2>
+        <ul>
+          <li><strong>Default:</strong> MockLLM for deterministic demos and offline review</li>
+          <li><strong>Optional:</strong> OpenAI GPT-4o mini or Anthropic Haiku via function calling</li>
+          <li><strong>Fallback:</strong> MockLLM when API keys are absent or provider calls fail at startup</li>
+        </ul>
+        <p class="small">Trade-offs: capability vs cost vs latency vs data residency</p>
+      </section>
+
+      <section>
+        <h2>Agent memory</h2>
+        <ul>
+          <li><strong>Short-term:</strong> conversation thread in LangGraph memory</li>
+          <li><strong>Long-term:</strong> onboarding process state in SQLite</li>
+          <li><strong>Retention:</strong> prototype-local SQLite files, replaceable with managed store in production</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Tools and MCP mapping</h2>
+        <ul>
+          <li><code>duplicate_check</code> -> supplier master lookup service</li>
+          <li><code>create_onboarding</code> -> procurement package + ERP + cloud workflow</li>
+          <li><code>aggregate_status</code> -> cross-system status API</li>
+        </ul>
+        <p class="small">Prototype uses Python service functions; production mapping: MCP servers per platform with OAuth/service accounts</p>
+        <p class="small"><strong>Note:</strong> MCP is not implemented here because the challenge expects mocked backends; in production, dedicated MCP servers per platform (procurement, ERP, cloud) would expose scoped tools over OAuth/service accounts.</p>
+      </section>
+
+      <section>
+        <h2>Duplicate detection</h2>
+        <ul>
+          <li>Normalize VAT, DUNS, name, address</li>
+          <li>Exact match on VAT/DUNS</li>
+          <li>Fuzzy match on name + address via RapidFuzz</li>
+          <li>Thresholds: 95+ auto, 80–95 review, below 80 new supplier</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Cross-system status</h2>
+        <ul>
+          <li>Canonical phases: initiated -> duplicate_check -> package_created -> erp_sync -> cloud_compliance -> active</li>
+          <li>Map subsystem states into canonical phases</li>
+          <li>Health: healthy / degraded / stale</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Async, retry, idempotency</h2>
+        <ul>
+          <li>Task states: pending, in_progress, waiting_external, done, failed</li>
+          <li>Exponential backoff retry on transient connector failures</li>
+          <li>Idempotency keys on create operations</li>
+          <li>Fault injection flags for demo and testing</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Security and privacy</h2>
+        <ul>
+          <li>Secrets only in environment variables</li>
+          <li>Guardrail example: VAT IDs and emails masked in structured logs before write</li>
+          <li>Guardrail example: chat input validated (length limits, safe session_id pattern)</li>
+          <li>Production would add RBAC, audit trails, and per-system scoped tokens</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Demo walkthrough</h2>
+        <ol>
+          <li>Duplicate check for FreshFarm GmbH</li>
+          <li>Start onboarding for NewOrganic Ltd</li>
+          <li>Ask for ONB-001 status</li>
+          <li>Enable ERP fault to show degraded health</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Alternatives considered</h2>
+        <ul>
+          <li>Single prompt chain -> rejected: weak tool control and observability</li>
+          <li>Direct UI over APIs -> rejected: no conversational guidance</li>
+          <li>Real integrations in prototype -> rejected: violates challenge scope</li>
+        </ul>
+      </section>
+
+      <section>
+        <h1>Thank you</h1>
+        <p>Repository: <a href="https://github.com/szatmari-ivett/supplieronboardingagent">github.com/szatmari-ivett/supplieronboardingagent</a></p>
+      </section>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>Reveal.initialize({ hash: true });</script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+[project]
+name = "supplier-onboarding-agent"
+version = "0.1.0"
+description = "Conversational supplier onboarding prototype for the ALDI Developer Challenge"
+readme = "README.md"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/main.py" = ["B008"]

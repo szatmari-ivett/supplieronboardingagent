@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Supplier Onboarding Agent</title>
+  <link rel="stylesheet" href="/static/styles.css?v=0.1.1" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Supplier Onboarding Agent</h1>
+      <p>Guide duplicate checks, onboarding packages, and cross-system status in one conversation.</p>
+    </header>
+
+    <section class="status-panel" id="statusPanel">
+      <div class="badge healthy" id="healthBadge">Health: unknown</div>
+      <div class="progress" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="phase" id="phaseLabel">Phase: waiting for onboarding</div>
+    </section>
+
+    <main id="chat" class="chat"></main>
+
+    <form id="chatForm" class="composer">
+      <input id="messageInput" type="text" placeholder="Ask about duplicates, start onboarding, or request status..." autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+
+    <section class="examples">
+      <button type="button" class="example" data-message="Does supplier FreshFarm GmbH already exist? VAT DE123456789">Duplicate check</button>
+      <button type="button" class="example" data-message="Start onboarding for NewOrganic Ltd, UK, VAT GB987654321">Start onboarding</button>
+      <button type="button" class="example" data-message="What is the status of onboarding ONB-001?">Status</button>
+    </section>
+  </div>
+  <script src="/static/app.js?v=0.1.1"></script>
+</body>
+</html>

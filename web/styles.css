@@ -1,0 +1,169 @@
+:root {
+  --bg: #f4f7fb;
+  --panel: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --accent: #0050a4;
+  --accent-soft: #dbeafe;
+  --danger: #b42318;
+  --warning: #b54708;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 100%);
+  color: var(--text);
+}
+
+.app {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  color: var(--accent);
+}
+
+header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.status-panel {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--panel);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge.healthy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.degraded {
+  background: #fee4e2;
+  color: var(--danger);
+}
+
+.badge.stale {
+  background: #fef0c7;
+  color: var(--warning);
+}
+
+.progress {
+  margin: 12px 0;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #0050a4, #0085CA);
+  transition: width 0.3s ease;
+}
+
+.phase {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.chat {
+  min-height: 420px;
+  max-height: 520px;
+  overflow-y: auto;
+  padding: 16px;
+  background: var(--panel);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.message {
+  max-width: 80%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.message.user {
+  margin-left: auto;
+  background: var(--accent);
+  color: white;
+}
+
+.message.assistant {
+  background: var(--accent-soft);
+}
+
+.tool-details {
+  margin: 0 0 12px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 8px 12px;
+}
+
+.tool-details pre {
+  overflow-x: auto;
+  font-size: 12px;
+}
+
+.composer {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.composer input {
+  flex: 1;
+  padding: 14px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  font-size: 15px;
+}
+
+.composer button,
+.examples button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.examples button {
+  background: white;
+  color: var(--accent);
+  border: 1px solid #bfdbfe;
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "SUP-001",
+    "name": "FreshFarm GmbH",
+    "vat_id": "DE123456789",
+    "duns": "123456789",
+    "country": "DE",
+    "address": "Berliner Strasse 12, Munich"
+  },
+  {
+    "id": "SUP-002",
+    "name": "Fresh Farm GmbH",
+    "vat_id": "DE123456789",
+    "duns": "123456789",
+    "country": "DE",
+    "address": "Berliner Str. 12, Muenchen"
+  },
+  {
+    "id": "SUP-003",
+    "name": "Nordic Dairy AB",
+    "vat_id": "SE5566778899",
+    "duns": "987654321",
+    "country": "SE",
+    "address": "Storgatan 5, Stockholm"
+  },
+  {
+    "id": "SUP-004",
+    "name": "GreenLeaf Organics Ltd",
+    "vat_id": "GB112233445",
+    "duns": "555666777",
+    "country": "GB",
+    "address": "42 Market Road, London"
+  },
+  {
+    "id": "SUP-005",
+    "name": "Alpine Foods SA",
+    "vat_id": "CH998877665",
+    "duns": "444333222",
+    "country": "CH",
+    "address": "Rue du Lac 8, Geneva"
+  },
+  {
+    "id": "SUP-006",
+    "name": "Mediterranean Produce SRL",
+    "vat_id": "IT667788990",
+    "duns": "111222333",
+    "country": "IT",
+    "address": "Via Roma 15, Milan"
+  },
+  {
+    "id": "SUP-007",
+    "name": "Benelux Snacks BV",
+    "vat_id": "NL123456789B01",
+    "duns": "777888999",
+    "country": "NL",
+    "address": "Keizersgracht 100, Amsterdam"
+  }
+]

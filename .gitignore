@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+data/*.db
+data/*.db-wal
+data/*.db-shm
